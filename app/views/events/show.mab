@@ -1,0 +1,14 @@
+page_title @event.name
+
+form_for @event do |f|
+  fieldset do
+    legend "Update Event"
+    label "name"
+    p { f.text_field :name }
+    
+    label "columns"
+    p { f.text_area :columns_as_yaml, :size => "30x10" }
+
+    submit_tag "Update"
+  end
+end

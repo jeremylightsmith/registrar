@@ -2,7 +2,13 @@ page_title "Events"
 
 ul do
   @events.each do |event|
-    li link_to(event.name, event_registrations_path(event))
+    li do
+      text "#{event.name} ("
+      span {link_to("edit", event_path(event))}
+      text ", "
+      span {link_to("registrations", event_registrations_path(event))}
+      text ")"
+    end
   end
 end
 

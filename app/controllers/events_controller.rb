@@ -11,13 +11,13 @@ class EventsController < ApplicationController
   
   def create
     event = current_user.events.create! params[:event]
-    redirect_to event_registrations_path(event)
+    redirect_to events_path
   end
   
   def update
     @event = Event.find_by_url_name(params[:id])
     @event.update_attributes!(params[:event])
     
-    redirect_to event_path(@event)
+    redirect_to events_path
   end
 end

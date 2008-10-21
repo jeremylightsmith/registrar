@@ -31,8 +31,8 @@ describe RegistrationsController do
       r.fields["email"].should == "jeremy@pivotallabs.com"
       r.fields["school"].should == "USC"
       r.fields["gender"].should == "male"
-      
-      response.should be_success
+
+      response.should be_redirect
     end
   end
 

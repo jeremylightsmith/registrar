@@ -18,6 +18,14 @@ class Registration < ActiveRecord::Base
     fields["name"] = value
   end
   
+  def amount
+    fields["amount"]
+  end
+  
+  def amount=(value)
+    fields["amount"] = value
+  end
+  
   def fields=(value)
     fields.merge! value
   end

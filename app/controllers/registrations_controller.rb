@@ -23,11 +23,7 @@ class RegistrationsController < ApplicationController
   
   def create
     @registration = @event.registrations.create!(:fields => white_list(params))
-    @paypal_url = RAILS_ENV == 'production' ? 
-                    "https://www.paypal.com/cgi-bin/webscr" : 
-                    "https://www.sandbox.paypal.com/cgi-bin/webscr"
-    
-    render :action => "paypal"
+    redirect_to paypal_url
   end
   
   def edit
@@ -97,5 +93,33 @@ class RegistrationsController < ApplicationController
   
   def load_event
     @event = Event.find_by_url_name(params[:event_id])
+  end
+  
+  def paypal_url
+    # paypal_url = RAILS_ENV == 'production' ? 
+    #                 "https://www.paypal.com/cgi-bin/webscr" : 
+    #                 "https://www.sandbox.paypal.com/cgi-bin/webscr"
+    paypal_url = "https://www.paypal.com/cgi-bin/webscr"
+
+    email = @event.user.email
+    email.sub!("@", "+#{@event.to_param}@")
+    paypal_url + "?" + {
+      :cmd => "_xclick",
+      :business => email,
+      :item_name => @registration.class.to_s.titleize,
+      :item_number => @registration.class.to_s,
+      :custom => @registration.id,
+      :amount => @registration.amount,
+      :no_shipping => 1,
+      :no_note => 1,
+      :currency_code => "USD",
+      :cancel_return => "http://www.jeremyandkarissa.com/exchange/register",
+      :return => mark_paid_event_registration_url(@event, @registration),
+      :rm => 2,
+      :cbt => "Complete and Return",
+      :bn => "PP-BuyNowBF"
+    }.map do |key, value|
+      URI.escape("#{key}=#{value}")
+    end.join("&")
   end
 end

@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(:version => 3) do
     t.string   "name"
     t.string   "url_name"
     t.integer  "user_id"
-    t.text     "columns"
+    t.text     "columns_as_yaml"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

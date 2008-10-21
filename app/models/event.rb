@@ -1,5 +1,6 @@
 class Event < ActiveRecord::Base
   has_many :registrations
+  belongs_to :user
 
   def name=(value)
     self[:name] = value
@@ -15,11 +16,16 @@ class Event < ActiveRecord::Base
   end
   
   def columns
-    @columns ||= YAML.load(self[:columns] || "--- []\n")
+    @columns ||= YAML.load(columns_as_yaml || "--- []\n")
   end
   
   def columns=(value)
-    self[:columns] = (@columns = value).to_yaml
+    self.columns_as_yaml = (@columns = value).to_yaml
+  end
+  
+  def columns_as_yaml=(value)
+    self[:columns_as_yaml] = value
+    @columns = nil
   end
   
   def valid_column?(column)

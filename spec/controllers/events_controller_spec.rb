@@ -29,12 +29,13 @@ describe EventsController do
   
   describe "PUT update" do
     it "should update an event" do
-      put :update, :id => @blues_hero.to_param, :event => {:name => "challenge", :columns => ["a", "b", "c"]}
+      put :update, :id => @blues_hero.to_param, :event => {:name => "challenge", :columns_as_yaml => "---\n- a\n- b\n- c"}
       
       @blues_hero.reload
       @blues_hero.name.should == "challenge"
       @blues_hero.columns.should == %w(a b c)
-      response.should redirect_to(event_path(@blues_hero))
+
+      response.should redirect_to(events_path)
     end
   end
   
@@ -45,7 +46,7 @@ describe EventsController do
       @user.reload.events.size.should == 2
       event = @user.events.last
       event.name.should == 'blues hero'
-      response.should redirect_to(event_registrations_path(event))
+      response.should redirect_to(events_path)
     end
   end
 end
