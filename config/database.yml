@@ -1,0 +1,20 @@
+login: &login
+  adapter: mysql
+  host: localhost
+  username: root
+  password: password
+
+development:
+  database: registrar_development
+  <<: *login
+
+test:
+  database: registrar_test
+  <<: *login
+
+production:
+  adapter: mysql
+  host: localhost
+  username: data-stellsmi
+  password: tworker1
+  database: stellsmi_registrar

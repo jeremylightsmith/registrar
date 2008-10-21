@@ -1,0 +1,11 @@
+table.name_value do
+  type = @registration.class
+  type.display_columns.each do |c|
+    field c
+  end
+
+  field :created_at
+  field :updated_at
+end
+
+link_to "edit", edit_registration_path(@registration)

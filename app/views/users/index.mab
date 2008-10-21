@@ -1,0 +1,25 @@
+page_title "Users"
+
+table :border => 1, :cellpadding => 3, :cellspacing => 0 do
+  tr do
+    th "name"
+    th "email"
+    th "admin?"
+    th "delete"
+  end
+  @users.each do |user|
+    tr do
+      name = user.name.blank? ? "&lt;no name&gt;" : user.name
+      
+      td {link_to name, edit_user_path(user)}
+      td user.email
+      td user.admin? ? "X" : ""
+      td {link_to "[x]", user_path(user.id), :method => :delete, 
+                  :confirm => "Are you sure you want to delete #{user.login}"}
+    end
+  end
+end
+
+br
+br
+link_to "create new user", new_user_path

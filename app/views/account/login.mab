@@ -1,0 +1,35 @@
+page_title "Sign In"
+
+content_for :head do
+  stylesheet_link_tag '/panel', :media => 'all'
+  stylesheet_link_tag '/account', :media => 'all'
+end
+
+form_tag do
+  div do
+    div.login.panel do
+      div.inner_panel do
+        p "Sign in to your account"
+        dl do
+          dt "Email:"
+          dd {text_field_tag 'email', '', :size => 35}
+
+          dt "Password:"
+          dd {password_field_tag 'password', '', :size => 35}
+    
+          dt {check_box_tag 'remember_me'}
+          dd {label "Remember me on this computer", :for => 'remember_me'}
+    
+        end
+        submit_tag "Sign in"
+      end
+    end
+  end
+end
+
+div.login.panel do
+  div.inner_panel do
+    p {b "Don't have an account?"}
+    link_to "<b>Create an account now</b>", "/account/signup"
+  end
+end

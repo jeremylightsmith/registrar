@@ -1,0 +1,28 @@
+html do
+  head do
+    title @title
+    stylesheet_link_tag 'application', :media => 'all'
+    javascript_include_tag "jquery-1.2.6.pack.js"
+    
+    self << content_for_head if @content_for_head
+  end
+
+  body do
+    div.title do
+      div.title_actions do
+        if logged_in?
+          link_to "profile", edit_user_path(current_user) 
+          link_to "logout", "/account/logout"
+        end
+      end
+      text @content_for_title
+    end
+      
+    div.content do
+      div.notice flash[:notice] if flash[:notice]
+      div.error flash[:error] if flash[:error]
+      
+      self << content_for_layout
+    end
+  end
+end

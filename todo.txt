@@ -1,0 +1,4 @@
+generate url name for event
+guard against duplicate url names in events
+handle event errors on create
+edit event after create

@@ -1,0 +1,20 @@
+form_for :registration, @registration, :url => registration_path(@registration), :html => {:method => :put} do |f|
+  table.name_value do
+    type = @registration.class
+    type.editable_columns.each do |c|
+      case @registration.class.type_of_field(c)
+      when :string
+        field(c) {f.text_field c}
+      when :boolean
+        field(c) {f.check_box c}
+      when :text
+        field(c) {f.text_area c}
+      end
+    end
+
+    field :created_at
+    field :updated_at
+  end
+  
+  submit_tag
+end

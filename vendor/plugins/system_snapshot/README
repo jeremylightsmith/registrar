@@ -1,0 +1,77 @@
+Why?
+----
+
+system_snapshot is a computationally cheap ruby script that gathers up system statistics you specify, particularly
+stats of a family of processes (e.g. mongrel, httpd).  You'll want to set it up in cron so that it runs every minute.
+
+We created this on peer to patent, and used it again on salesforce, because we wanted to monitor our mongrels,
+web server processes, and memory swapping.
+
+The statistics generated provide a good foundation for troubleshooting runtime rails application problems.
+
+
+
+do_system_snapshot
+------------------
+You'll want to copy do_system_snapshot_sample.rb to your ./script directory as "do_system_snapshot.rb".
+
+Open up the file and change the processes you want to monitor.  To figure out what you want to monitor, log on
+to your target linux server and run:
+
+ps -eo command,pid,%cpu,%mem,rss
+
+Evaluate the list for processes that are interesting to you.  Usually this means ruby and httpd, and often includes
+java, rake, and mysqld.
+
+system_snapshot will match processes using /^the_process_string_you_specified/
+
+Test it from the command line (but remember, you're probably running this on a mac, which is likely to have different
+paths to the processes you care about than your linux server does).  From your project root, run
+
+ruby script/do_system_snapshot.rb
+
+You should see a csv file under ./stats named using today's date plus your hostname.
+
+
+
+Cron / Deployment
+-----------------
+
+You will probably want to run system_snapshot every minute via cron.  You'll want to write something like the
+following out to the target system's cronttab as part of your capistrano deployment:
+
+* * * * * someuser cd /u/apps/your-app/current && /usr/local/bin/ruby ./script/do_system_snapshot.rb
+
+
+After you deploy for the first time, it's highly recommended that you ssh into the remote box and try out this line
+(the part starting with "cd") to make sure it's all in working order.
+
+Watch the csv file collect up entries for a few minutes, so you know your cron job is working, and sanity-check
+the numbers being collected, so you know system_snapshot is doing the right thing.
+
+
+
+Rolling over stat csv files?
+----------------------------
+
+If you've kept the default do_system_shapshot behavior you'll have a new csv file every day.  And if you're running
+this every minute using cron, there isn't enough being written to each file for you to care about rolling anything
+over.
+
+
+
+Usage advice
+------------
+
+If your mongrels are balooning, it's often tough to track down the problem during development.  Check the csv file
+for leaps in "ruby" memory usage, then look in the rails log during the preceding minute and come up with candidates
+to check.
+
+To further prove something is causing memory problems (or, to test out a few candidates), on your local dev box
+try printing a diff of ObjectSpace (count of objects per class), before and after the suspected rails action executes.
+
+If you're being attacked or overloaded by some outside client, you'll see evidence in the form of increased numbers
+of httpd processes, cpu usage, and more ram usage.
+
+si/so should almost always be 0/0.  If you see it going above very small numbers, you have a swap problem.  Swap
+problems will quickly cause your server to fall over (or act as if it has).  Buy more RAM.

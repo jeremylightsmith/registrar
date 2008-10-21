@@ -1,0 +1,22 @@
+page_title "Events"
+
+ul do
+  @events.each do |event|
+    li link_to(event.name, event_registrations_path(event))
+  end
+end
+
+form_for Event.new, :url => events_path, :html => {:style => "display: none;"} do |f|
+  fieldset do
+    legend "Add Event"
+    label "name"
+    p { f.text_field :name }
+    
+    label "columns"
+    p { f.text_area :columns, :size => "30x10" }
+
+    submit_tag "Create"
+  end
+end
+
+link_to_function "add event", "$('.new_event').toggle()", :class => 'new_event'

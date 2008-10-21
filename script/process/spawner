@@ -1,0 +1,12 @@
+#!/bin/sh
+
+APP=one_site
+HOME=/users/home/stellsmi
+ROOT=$HOME/rails_apps/$APP/current
+TMP=$ROOT/tmp
+ENV=production
+
+mkdir -p $TMP
+RAILS_ENV=$ENV spawn-fcgi -f $ROOT/public/dispatch.fcgi -s $TMP/$APP-0.socket -P $TMP/$APP-0.pid
+
+sleep 10

@@ -1,0 +1,65 @@
+page_title @event.name
+
+style :type => 'text/css' do
+"
+  th {
+    font-size: 90%;
+  }
+  
+  th img {
+    padding-left: 1em;
+  }
+"
+end
+
+link_to "download as csv", :format => 'csv', :type => @type
+
+br
+
+if @type
+  columns = (@type.display_columns + [:created_at, :updated_at])
+
+  table :border => 1, :cellspacing => 0, :cellpadding => 5 do
+    tr do
+      th "#"
+      columns.each do |c|
+        th do
+          if params[:sort] == c.to_s
+            if params[:direction] == 'down'
+              link_to c.to_s.titleize + image_tag('/images/icons/down.png'), registrations_path(:sort => c.to_s, :direction => 'up')
+            else
+              link_to c.to_s.titleize + image_tag('/images/icons/up.png'), registrations_path(:sort => c.to_s, :direction => 'down')
+            end
+          else
+            link_to c.to_s.titleize, registrations_path(:sort => c.to_s, :direction => 'down')
+          end
+        end
+      end
+    end
+    
+    @registrations.each_with_index do |r, i|
+      tr do
+        td { i + 1 }
+        cols = @type.display_columns
+        first = cols[0]
+        td { link_to r.send(first), edit_registration_path(r) }
+        cols[1..-1].each do |c|
+          if c == :email
+            row "<a href='mailto:\"#{r.name}\" &lt;#{r.email}&gt;'>#{r.email}</a>"
+          else
+            row r.send(c)
+          end
+        end
+        td do 
+          div r.created_at.to_s(:short), :style => "width: 7em"
+        end
+        td do 
+          div r.updated_at.to_s(:short), :style => "width: 7em"
+        end
+        td do
+          text link_to "[x]", registration_path(r).to_s, :method => :delete, :class => "delete"
+        end
+      end
+    end
+  end
+end

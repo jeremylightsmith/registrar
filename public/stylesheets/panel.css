@@ -1,0 +1,36 @@
+.panel {
+  width: 40em;
+  margin-top: 1em;
+  border: 1px solid #d7ddeb;
+  text-align: center;
+}
+
+.panel .inner_panel {
+  margin: 3px;
+  background-color: #e8eefa;
+  padding: 0.2em 0.5em 1em 0.5em;
+}
+
+.panel dt {
+  float: left;
+  text-align: right;
+  margin-top: 0.2em;
+  clear: both;
+  font-weight: bold;
+  width: 10em;
+}
+
+.panel dd {
+  text-align: left;
+  margin-bottom: 0.4em;
+  margin-left: 10.4em;
+}
+
+.panel .hint {
+  color: #666;
+  margin-top: 0.1em;
+}
+
+.panel h2 {
+  color: #3366CC;
+}
