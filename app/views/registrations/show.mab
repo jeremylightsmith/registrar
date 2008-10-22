@@ -1,6 +1,5 @@
 table.name_value do
-  type = @registration.class
-  type.display_columns.each do |c|
+  @event.display_columns.each do |c|
     field c
   end
 
@@ -8,4 +7,4 @@ table.name_value do
   field :updated_at
 end
 
-link_to "edit", edit_registration_path(@registration)
+link_to "edit", edit_event_registration_path(@event, @registration)

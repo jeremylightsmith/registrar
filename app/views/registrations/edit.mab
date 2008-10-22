@@ -1,20 +1,26 @@
-form_for :registration, @registration, :url => registration_path(@registration), :html => {:method => :put} do |f|
-  table.name_value do
-    type = @registration.class
-    type.editable_columns.each do |c|
-      case @registration.class.type_of_field(c)
-      when :string
-        field(c) {f.text_field c}
-      when :boolean
-        field(c) {f.check_box c}
-      when :text
-        field(c) {f.text_area c}
-      end
-    end
+page_title "Registration for #{@registration.name}"
 
-    field :created_at
-    field :updated_at
-  end
+form_tag event_registration_path(@event, @registration), :method => :put do
+  capture do
+    table.name_value do
+      @event.columns.each do |c|
+        case @event.type_of_field(c)
+        when :string
+          field(c) {|v| text_field_tag c, v}
+        when :boolean
+          field(c) {|v| check_box_tag c, v}
+        when :text
+          field(c) {|v| text_area_tag c, v}
+        end
+      end
+
+      field :created_at
+      field :updated_at
+    end
   
-  submit_tag
+    submit_tag
+  end
 end
+
+br
+link_to "Back to list", event_registrations_path(@event)

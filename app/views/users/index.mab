@@ -15,7 +15,7 @@ table :border => 1, :cellpadding => 3, :cellspacing => 0 do
       td user.email
       td user.admin? ? "X" : ""
       td {link_to "[x]", user_path(user.id), :method => :delete, 
-                  :confirm => "Are you sure you want to delete #{user.login}"}
+                  :confirm => "Are you sure you want to delete #{user.name}"}
     end
   end
 end

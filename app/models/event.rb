@@ -15,6 +15,10 @@ class Event < ActiveRecord::Base
     columns
   end
   
+  def display_columns
+    columns
+  end
+  
   def columns
     @columns ||= YAML.load(columns_as_yaml || "--- []\n")
   end
@@ -30,5 +34,15 @@ class Event < ActiveRecord::Base
   
   def valid_column?(column)
     columns.include?(column)
+  end
+  
+  def type_of_field(column)
+    if column.ends_with?("?")
+      return :boolean
+    elsif column == "note"
+      return :text
+    else
+      return :string
+    end
   end
 end

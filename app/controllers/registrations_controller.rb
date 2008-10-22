@@ -22,7 +22,7 @@ class RegistrationsController < ApplicationController
   end
   
   def create
-    @registration = @event.registrations.create!(:fields => white_list(params))
+    @registration = @event.registrations.create!(:fields => black_list(params))
     redirect_to paypal_url
   end
   
@@ -32,7 +32,7 @@ class RegistrationsController < ApplicationController
   
   def update
     show
-    @registration.update_attributes!(:fields => white_list(params))
+    @registration.update_attributes!(:fields => black_list(params))
     redirect_to event_registrations_path(@event)
   end
   
@@ -52,9 +52,9 @@ class RegistrationsController < ApplicationController
   
   private
   
-  def white_list(params)
+  def black_list(params)
     params = params.dup
-    %w(controller action event_id id).each {|key| params.delete(key)}
+    %w(controller action event_id id commit _method format).each {|key| params.delete(key)}
     params
   end
   
@@ -102,22 +102,20 @@ class RegistrationsController < ApplicationController
     paypal_url = "https://www.paypal.com/cgi-bin/webscr"
 
     email = @event.user.email
-    email.sub!("@", "+#{@event.to_param}@")
     paypal_url + "?" + {
       :cmd => "_xclick",
       :business => email,
-      :item_name => @registration.class.to_s.titleize,
-      :item_number => @registration.class.to_s,
+      :item_name => @event.name,
+      :item_number => @registration.name,
       :custom => @registration.id,
       :amount => @registration.amount,
       :no_shipping => 1,
       :no_note => 1,
       :currency_code => "USD",
-      :cancel_return => "http://www.jeremyandkarissa.com/exchange/register",
-      :return => mark_paid_event_registration_url(@event, @registration),
+      :cancel_return => request.env["HTTP_REFERER"],
+      :return => "#{mark_paid_event_registration_url(@event, @registration)}?back_to=#{request.env["HTTP_REFERRER"]}",
       :rm => 2,
-      :cbt => "Complete and Return",
-      :bn => "PP-BuyNowBF"
+      :cbt => "Complete and Return"
     }.map do |key, value|
       URI.escape("#{key}=#{value}")
     end.join("&")
